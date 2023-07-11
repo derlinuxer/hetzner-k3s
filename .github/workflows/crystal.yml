@@ -1,4 +1,4 @@
-name: Build ARM & X86 Release
+name: Build ARM Release
 
 on:
   workflow_dispatch:
@@ -39,21 +39,10 @@ jobs:
             FILES: hetzner-k3s-linux-arm64
 
           run: |
-            uname -a
             apk add yaml yaml-dev libssh2 libssh2-dev libssh2-static libxml2-dev libxml2-static xz-static crystal shards
-            
-            
-            #docker run -d --name alpine -v $(pwd):/workspace -w /workspace 84codes/crystal:master-alpine tail -f /dev/null
-            #docker exec alpine apk add libssh2 libssh2-dev libssh2-static libxml2-dev libxml2-static xz-static
-            #docker exec alpine shards install --without-development
-            #docker exec alpine crystal build src/hetzner-k3s.cr --release --static
-            
-            ls -al $(pwd)
             shards install --without-development
             shards build --without-development
-            #crystal build src/hetzner-k3s.cr --release --static
-            ls -al $(pwd)
-            cp hetzner-k3s hetzner-k3s-linux-arm64
-            file hetzner-k3s
+            cp ./bin/hetzner-k3s hetzner-k3s-linux-arm64
+            file hetzner-k3s-linux-arm64
             gh release create ${{ env.VERSION }} -n "${{ env.MESSAGE }}" -t "${{ env.NAME }}" || true
             gh release upload ${{ env.VERSION }} ${{ env.FILES }}
