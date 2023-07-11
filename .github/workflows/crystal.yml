@@ -39,7 +39,7 @@ jobs:
             FILES: hetzner-k3s-linux-arm64
 
           run: |
-            apk add yaml yaml-dev libssh2 libssh2-dev libssh2-static libxml2-dev libxml2-static xz-static crystal shards
+            apk add yaml yaml-dev libssh2 libssh2-dev libssh2-static libxml2-dev libxml2-static xz-static crystal shards github-cli
             shards install --without-development
             shards build --without-development
             cp ./bin/hetzner-k3s hetzner-k3s-linux-arm64
