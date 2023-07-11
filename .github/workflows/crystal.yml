@@ -39,9 +39,10 @@ jobs:
             FILES: hetzner-k3s-linux-arm64
 
           run: |
-            #apk add yaml yaml-dev libssh2 libssh2-dev libssh2-static libxml2-dev libxml2-static xz-static crystal shards github-cli
-            apk add --update --no-cache musl-dev gcc pcre-dev pcre2-dev libevent-dev libevent-static openssl1.1-compat-dev openssl1.1-compat-libs-static libxml2-dev zlib-dev zlib-static git make yaml-dev libxml2-static
-            apk add yaml yaml-dev yaml-static libssh2-static libxml2-dev libxml2-static xz-static crystal shards github-cli
+            apk add --update --no-cache gcc gmp-dev libevent-static musl-dev pcre-dev pcre2-dev libxml2-dev \
+              libxml2-static openssl-dev openssl-libs-static tzdata yaml-static zlib-static xz-static \
+              make git autoconf automake libtool patch
+            apk add --update --no-cache libssh2-static libssh2-dev crystal shards github-cli
             shards install --without-development
             shards build --without-development --release --static
             cp ./bin/hetzner-k3s hetzner-k3s-linux-arm64
