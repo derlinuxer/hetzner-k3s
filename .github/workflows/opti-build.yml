@@ -1,4 +1,7 @@
 on:
+  push:
+    branches:
+      - "optimize-build-action"
   workflow_dispatch:
     inputs:
       logLevel:
