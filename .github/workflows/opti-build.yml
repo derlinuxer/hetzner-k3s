@@ -33,13 +33,9 @@ jobs:
         include:
           - arch: aarch64
             distro: alpine_latest
-            binary_os_suffix: linux
-            binary_arch_sufix: arm64
           - arch: none
             distro: none
-            base_image: riscv64/busybox
-            binary_os_suffix: linux
-            binary_arch_sufix: amd64
+            base_image: alpine
       
     steps:
       - uses: actions/checkout@v3
