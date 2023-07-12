@@ -110,14 +110,14 @@ jobs:
             apk add --update --no-cache libssh2-static libssh2-dev crystal shards github-cli
             shards install --without-development
             shards build --without-development --release --static
-            cp ./bin/hetzner-k3s ${{ FILES }}
+            cp ./bin/hetzner-k3s ${{ env.FILES }}
             git config --global --add safe.directory /home/runner/work/hetzner-k3s/hetzner-k3s
             
       - name: Publish new version
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ GITHUB_TOKEN }}
-          file: ${{ FILES }}
-          tag: ${{ VERSION }}
+          repo_token: ${{ env.GITHUB_TOKEN }}
+          file: ${{ env.FILES }}
+          tag: ${{ env.VERSION }}
           overwrite: false
           body: ${{ env.MESSAGE }}
