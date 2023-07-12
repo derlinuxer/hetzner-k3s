@@ -37,7 +37,7 @@ jobs:
             binary_arch_sufix: arm64
           - arch: none
             distro: none
-            base_image: alpine
+            base_image: riscv64/busybox
             binary_os_suffix: linux
             binary_arch_sufix: amd64
       
