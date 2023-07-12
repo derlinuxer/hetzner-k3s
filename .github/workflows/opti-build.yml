@@ -33,6 +33,9 @@ jobs:
         include:
           - arch: aarch64
             distro: alpine_latest
+          - arch: none
+            distro: none
+            base_image: alpine
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
@@ -41,6 +44,7 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
+          base_image:  ${{ matrix.base_image }}
           
           install: |
             case "${{ matrix.distro }} || ${{ matrix.base_image }}" in
