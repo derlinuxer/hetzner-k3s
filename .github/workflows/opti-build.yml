@@ -53,15 +53,11 @@ jobs:
           shell: /bin/sh
           
           install: |
-            case "${{ matrix.distro }} || ${{ matrix.base_image }}" in
-              alpine*)
-                apk update
-                apk add --update --no-cache gcc gmp-dev libevent-static musl-dev pcre-dev pcre2-dev libxml2-dev \
-                  libxml2-static openssl-dev openssl-libs-static tzdata yaml-static zlib-static xz-static \
-                  make git autoconf automake libtool patch
-                apk add --update --no-cache libssh2-static libssh2-dev crystal shards github-cli
-                ;;
-            esac
+            apk update
+            apk add --update --no-cache gcc gmp-dev libevent-static musl-dev pcre-dev pcre2-dev libxml2-dev \
+              libxml2-static openssl-dev openssl-libs-static tzdata yaml-static zlib-static xz-static \
+              make git autoconf automake libtool patch
+            apk add --update --no-cache libssh2-static libssh2-dev crystal shards github-cli
           
           run: |
             shards install --without-development
