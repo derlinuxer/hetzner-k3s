@@ -33,9 +33,13 @@ jobs:
         include:
           - arch: aarch64
             distro: alpine_latest
+            binary_os_suffix: linux
+            binary_arch_suffix: amd64
           - arch: none
             distro: none
             base_image: alpine
+            binary_os_suffix: linux
+            binary_arch_suffix: amd64
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
@@ -45,6 +49,9 @@ jobs:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
           base_image:  ${{ matrix.base_image }}
+          binary_os_suffix: ${{ matrix.binary_os_suffix }}
+          binary_arch_suffix: ${{ matrix.binary_arch_suffix }}
+          
           
           install: |
             case "${{ matrix.distro }} || ${{ matrix.base_image }}" in
