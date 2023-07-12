@@ -37,7 +37,7 @@ jobs:
             binary_arch_suffix: amd64
           - arch: none
             distro: none
-            base_image: alpine
+            base_image: riscv64/busybox
             binary_os_suffix: linux
             binary_arch_suffix: amd64
     steps:
@@ -49,8 +49,6 @@ jobs:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
           base_image:  ${{ matrix.base_image }}
-          binary_os_suffix: ${{ matrix.binary_os_suffix }}
-          binary_arch_suffix: ${{ matrix.binary_arch_suffix }}
           
           
           install: |
