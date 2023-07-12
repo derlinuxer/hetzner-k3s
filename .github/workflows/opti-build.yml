@@ -50,6 +50,8 @@ jobs:
           distro: ${{ matrix.distro }}
           base_image:  ${{ matrix.base_image }}
           
+          shell: /bin/sh
+          
           run: |
             shards install --without-development
             shards build --without-development --release --static
