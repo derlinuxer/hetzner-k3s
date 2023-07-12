@@ -35,8 +35,7 @@ jobs:
             distro: alpine_latest
           - arch: none
             distro: none
-            base_image: alpine
-      
+            base_image: riscv64/busybox
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
