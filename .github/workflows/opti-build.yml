@@ -21,7 +21,7 @@ on:
 jobs:
   build_linux_releases:
     runs-on: ubuntu-22.04
-    name: Build 
+    name: Build binary - ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       VERSION: ${{ github.ref_name }}
@@ -40,6 +40,11 @@ jobs:
             base_image: amd64/alpine
             binary_os_suffix: linux
             binary_arch_suffix: amd64
+          - arch: none
+            distro: none
+            base_image: macos
+            binary_os_suffix: macos
+            binary_arch_suffix: amd64
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
@@ -57,7 +62,7 @@ jobs:
             apk add --update --no-cache gcc gmp-dev libevent-static musl-dev pcre-dev pcre2-dev libxml2-dev \
               libxml2-static openssl-dev openssl-libs-static tzdata yaml-static zlib-static xz-static \
               make git autoconf automake libtool patch
-            apk add --update --no-cache libssh2-static libssh2-dev crystal shards github-cli
+            apk add --update --no-cache libssh2-static libssh2-dev crystal shards github
           
           run: |
             shards install --without-development
