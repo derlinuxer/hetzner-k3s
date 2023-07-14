@@ -11,7 +11,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       VERSION: ${{ github.ref_name }}
       MESSAGE: "WIP"
-      FILES: hetzner-k3s-${{ matrix.release_suffix }}-${{ matrix.release_suffix }}
+      FILES: hetzner-k3s-${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
       
     strategy:
       matrix:
@@ -40,8 +40,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
-        if: matrix.binary_os_suffix == 'macos'
+      - if: matrix.binary_os_suffix == 'macos'
+        name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
+        
         run: |
           brew install crystal libssh2
           shards install --without-development
@@ -49,9 +50,9 @@ jobs:
           chmod +x hetzner-k3s
           cp hetzner-k3s ${{ env.FILES }}
           
-      - uses: uraimo/run-on-arch-action@v2
+      - if: matrix.binary_os_suffix == 'linux'
+        uses: uraimo/run-on-arch-action@v2
         name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
-        if: matrix.binary_os_suffix == 'linux'
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
