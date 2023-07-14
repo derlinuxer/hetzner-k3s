@@ -39,10 +39,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - if: matrix.binary_os_suffix == 'macos'
-        name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
         
+      - name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
+
+      - if: matrix.binary_os_suffix == 'macos' 
         run: |
           brew install crystal libssh2
           shards install --without-development
@@ -52,7 +52,6 @@ jobs:
           
       - if: matrix.binary_os_suffix == 'linux'
         uses: uraimo/run-on-arch-action@v2
-        name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
