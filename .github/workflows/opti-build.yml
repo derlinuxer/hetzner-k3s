@@ -17,9 +17,22 @@ jobs:
       matrix:
         include:
           - runs_on_tag: macos-latest
-            release_suffix: mac-amd64
+            binary_os_suffix: macos
+            binary_arch_suffix: amd64
           - runs_on_tag: ARM64
-            release_suffix: mac-arm64
+            binary_os_suffix: macos
+            binary_arch_suffix: arm64
+          - runs_on_tag: ubuntu-22.04
+            binary_os_suffix: linux
+            binary_arch_suffix: arm64
+            arch: aarch64
+            distro: alpine_latest
+          - runs_on_tag: ubuntu-22.04
+            binary_os_suffix: linux
+            binary_arch_suffix: amd64
+            arch: none
+            distro: none
+            base_image: amd64/alpine
             
     runs-on: ${{ matrix.runs_on_tag }}
     
@@ -27,50 +40,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: build ${{ matrix.release_suffix }} binary
+      - name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
+        if: matrix.binary_os_suffix == 'macos'
         run: |
           brew install crystal libssh2
           shards install --without-development
           crystal build src/hetzner-k3s.cr --release
           chmod +x hetzner-k3s
-          cp hetzner-k3s hetzner-k3s-${{ matrix.release_suffix }}
-      
-      - name: Publish new version
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ env.GITHUB_TOKEN }}
-          file: ${{ env.FILES }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-          body: ${{ env.MESSAGE }}
-       
-  build_linux_releases:
-    runs-on: ubuntu-22.04
-    name: Build binary - ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      VERSION: ${{ github.ref_name }}
-      MESSAGE: "WIP"
-      FILES: hetzner-k3s-${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
-    
-    strategy:
-      matrix:
-        include:
-          - arch: aarch64
-            distro: alpine_latest
-            binary_os_suffix: linux
-            binary_arch_suffix: arm64
-          - arch: none
-            distro: none
-            base_image: amd64/alpine
-            binary_os_suffix: linux
-            binary_arch_suffix: amd64
-         
-    steps:
-      - uses: actions/checkout@v3
+          cp hetzner-k3s ${{ env.FILES }}
+          
       - uses: uraimo/run-on-arch-action@v2
         name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
-        id: runcmd
+        if: matrix.binary_os_suffix == 'linux'
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
@@ -92,7 +73,7 @@ jobs:
             crystal build src/hetzner-k3s.cr --release --static
             cp hetzner-k3s ${{ env.FILES }}
             git config --global --add safe.directory /home/runner/work/hetzner-k3s/hetzner-k3s
-            
+      
       - name: Publish new version
         uses: svenstaro/upload-release-action@v2
         with:
