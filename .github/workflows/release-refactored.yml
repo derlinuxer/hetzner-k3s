@@ -1,7 +1,9 @@
+name: create release (refactored)
+
 on:
   push:
-    branches:
-      - "optimize-build-action"
+    tags:
+      - 'v*'
 
 jobs:
 
