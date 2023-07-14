@@ -5,7 +5,7 @@ on:
 
 jobs:
 
-  build_mac_releases:
+  build_releases:
     name: Build binary - ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
