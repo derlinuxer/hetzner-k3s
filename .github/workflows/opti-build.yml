@@ -2,23 +2,48 @@ on:
   push:
     branches:
       - "optimize-build-action"
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'info'
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: booleanSkip this and set up a workfl
 
 jobs:
+
+  build_mac_releases:
+    name: Build binary - ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VERSION: ${{ github.ref_name }}
+      MESSAGE: "WIP"
+      FILES: hetzner-k3s-${{ matrix.release_suffix }}-${{ matrix.release_suffix }}
+      
+    strategy:
+      matrix:
+        include:
+          - runs_on_tag: macos-latest
+            release_suffix: mac-amd64
+          - runs_on_tag: ARM64
+            release_suffix: mac-arm64
+            
+    runs-on: ${{ matrix.runs_on_tag }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: build ${{ matrix.release_suffix }} binary
+        run: |
+          brew install crystal libssh2
+          shards install --without-development
+          crystal build src/hetzner-k3s.cr --release
+          chmod +x hetzner-k3s
+          cp hetzner-k3s hetzner-k3s-${{ matrix.release_suffix }}
+      
+      - name: Publish new version
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ env.GITHUB_TOKEN }}
+          file: ${{ env.FILES }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+          body: ${{ env.MESSAGE }}
+       
   build_linux_releases:
     runs-on: ubuntu-22.04
     name: Build binary - ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }}
@@ -44,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
-        name: Build arm64 binary
+        name: Build ${{ matrix.binary_os_suffix }}-${{ matrix.binary_arch_suffix }} binary
         id: runcmd
         with:
           arch: ${{ matrix.arch }}
