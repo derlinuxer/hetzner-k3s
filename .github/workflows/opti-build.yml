@@ -39,9 +39,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          set-safe-directory: '/home/runner/work/hetzner-k3s/hetzner-k3s'
 
       - if: matrix.binary_os_suffix == 'macos'
-        name: Build macos-${{ matrix.binary_arch_suffix }} binary
+        name: macos build step
         run: |
           brew install crystal libssh2
           shards install --without-development
@@ -51,7 +53,7 @@ jobs:
           
       - if: matrix.binary_os_suffix == 'linux'
         uses: uraimo/run-on-arch-action@v2
-        name: Build linux-${{ matrix.binary_arch_suffix }} binary
+        name: linux build step
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
@@ -72,7 +74,6 @@ jobs:
             #cp ./bin/hetzner-k3s ${{ env.FILES }}
             crystal build src/hetzner-k3s.cr --release --static
             cp hetzner-k3s ${{ env.FILES }}
-            git config --global --add safe.directory /home/runner/work/hetzner-k3s/hetzner-k3s
       
       - name: Publish new version
         uses: svenstaro/upload-release-action@v2
